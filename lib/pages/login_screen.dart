@@ -25,7 +25,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-   return SafeArea(
+    //pixel reflux error was because safe area is not a material widget
+    //and we can call only material widget inside material widget
+
+   return Scaffold(body: SafeArea(
      child: Container(
        padding: const EdgeInsets.symmetric(horizontal: 32),
        width: double.infinity,
@@ -48,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
          ],
        ),
      ),
+   ),
    );
   }
 

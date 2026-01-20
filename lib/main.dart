@@ -6,7 +6,7 @@ import 'package:instagramclone/responsive/responsive.dart';
 import 'package:instagramclone/responsive/web_screen_layout.dart';
 import 'package:instagramclone/utils/colors.dart';
 
-Future<void> main() async {
+void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
