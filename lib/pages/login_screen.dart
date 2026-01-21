@@ -41,13 +41,70 @@ class _LoginScreenState extends State<LoginScreen> {
            //   color: primaryColor,
            //   height: 64,
            // ),
-           //
+           Text('INSTAGRAM' , style: TextStyle(
+             fontWeight: FontWeight.w600,
+             fontSize: 32,
+           ), ),
            const SizedBox(height: 64),
            TextFieldInput(
                textInputType: TextInputType.emailAddress,
                textEditingController: _emailController,
                hintText: 'Enter your Email'
            ),
+           const SizedBox(height: 24),
+           TextFieldInput(
+               textInputType: TextInputType.text,
+               textEditingController: _passwordController,
+               hintText: 'Enter your Password',
+               isPass: true,
+           ),
+           const SizedBox(
+             height: 24,
+           ),
+
+           InkWell(child :Container(
+             child: const Text('Log In'),
+             width: double.infinity,
+             alignment: Alignment.center,
+             padding: const EdgeInsets.symmetric(vertical: 12),
+             decoration: const ShapeDecoration(shape: RoundedRectangleBorder(
+               borderRadius: BorderRadius.all(
+                 Radius.circular(4),
+               )
+              ),
+               color: blueColor
+             ),
+           ),
+           ),
+           SizedBox(
+             height: 12,
+           ),
+           Flexible(flex: 2,child: Container()),
+           
+           Row(
+             mainAxisAlignment: MainAxisAlignment.center,
+             children: [
+               Container(
+                 child: Text("Don't have an account ?"),
+                 padding: const EdgeInsets.symmetric(
+                   vertical: 8,
+                 ),
+               ),
+               GestureDetector(
+                 onTap: (){},
+                 child: Container(
+                 child: Text("Sign up.",
+                   style: TextStyle(
+                     fontWeight: FontWeight.bold,
+                   ),
+                 ),
+                 padding: const EdgeInsets.symmetric(
+                   vertical: 8,
+                 ),
+                ),
+               ),
+             ],
+           )
          ],
        ),
      ),

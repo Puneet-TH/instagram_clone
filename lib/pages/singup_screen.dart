@@ -1,0 +1,182 @@
+import 'dart:ffi';
+import 'dart:typed_data' show Uint8List;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:instagramclone/resources/auth_methods.dart';
+import 'package:instagramclone/utils/colors.dart';
+import 'package:instagramclone/utils/utils.dart';
+import 'package:instagramclone/widget/text_field.dart';
+
+class SignupScreen  extends StatefulWidget{
+  const SignupScreen({Key? key}) : super(key: key);
+
+  @override
+  _SignupScreenState createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  Uint8List? _image;
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _bioController.dispose();
+    _usernameController.dispose();
+  }
+
+  //adding image uploading logic then check for cloudinary way tommorow
+  void selectImage() async{
+   Uint8List im = await pickImage(ImageSource.gallery);
+   setState(() {
+   _image = im;
+   });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //pixel reflux error was because safe area is not a material widget
+    //and we can call only material widget inside material widget
+
+    return Scaffold(body: SafeArea(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Flexible(flex: 2,child: Container()),
+            Text('INSTAGRAM' , style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 32,
+            ), ),
+            // Container(
+            //   height: 64,
+            //   width: double.infinity,
+            //   decoration: const BoxDecoration(
+            //     image:  DecorationImage(image: NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgjlUsdHaTmVn-bF2zbjbnmSZ9L1h47TOYWQ&s'))
+            //   ),
+            // ),
+            const SizedBox(height: 16),
+            Stack(
+              children: [
+                _image != null
+                    ? CircleAvatar(
+                  radius: 64,
+                  backgroundImage: MemoryImage(_image!),
+                  backgroundColor: Colors.red,
+                )
+                //adding conditional logic for rendering default profile image or uploaded one
+               : const CircleAvatar(
+                  radius: 64,
+                  backgroundImage: NetworkImage('https://static.vecteezy.com/system/resources/previews/013/360/247/non_2x/default-avatar-photo-icon-social-media-profile-sign-symbol-vector.jpg'),
+                ),
+                Positioned(
+                  bottom: -10,
+                  left : 80,
+                  child: IconButton(onPressed: selectImage, icon: const Icon(Icons.add_a_photo,),),),
+              ],
+            ),
+            const SizedBox(height: 32),
+            TextFieldInput(
+              hintText: 'Enter your username',
+              textInputType: TextInputType.text,
+              textEditingController: _usernameController,
+            ),
+            const SizedBox(height: 24),
+            TextFieldInput(
+                hintText: 'Enter your Email',
+                textInputType: TextInputType.emailAddress,
+                textEditingController: _emailController,
+            ),
+            const SizedBox(height: 24),
+            TextFieldInput(
+              textInputType: TextInputType.text,
+              textEditingController: _passwordController,
+              hintText: 'Enter your Password',
+              isPass: true,
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            TextFieldInput(
+              hintText: 'Enter your bio',
+              textInputType: TextInputType.text,
+              textEditingController: _bioController,
+            ),
+            const SizedBox(height: 24),
+            InkWell(
+              //adding conditional logic to check if image is null so throw error
+              onTap: () async {
+                if(_image == null){
+                   ScaffoldMessenger.of(context).showSnackBar(
+                     const SnackBar(content: Text("profile pic not uploaded"))
+                   );
+                }
+                String res = await AuthMethods().signUpUser(
+                    email: _emailController.text,
+                    password: _passwordController.text,
+                    username: _usernameController.text,
+                    bio: _bioController.text,
+                    file: _image!
+                );
+                print(res);
+                },
+              child :Container(
+                child: const Text('Sign up'),
+                width: double.infinity,
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: const ShapeDecoration(shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(4),
+                    )
+                ),
+                    color: blueColor
+                ),
+              ),
+              ),
+              SizedBox(
+                height: 12,
+              ),
+              Flexible(flex: 2,child: Container()),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: Text("Don't have an account ?"),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: (){},
+                    child: Container(
+                      child: Text("Sign up.",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+      );
+    }
+
+}
