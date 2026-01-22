@@ -4,10 +4,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/pages/login_screen.dart';
 import 'package:instagramclone/pages/singup_screen.dart';
+import 'package:instagramclone/providers/user_provider.dart';
 import 'package:instagramclone/responsive/mobile_screen_layout.dart';
 import 'package:instagramclone/responsive/responsive.dart';
 import 'package:instagramclone/responsive/web_screen_layout.dart';
 import 'package:instagramclone/utils/colors.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
 
@@ -26,17 +28,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Socially',
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: mobileBackgroundColor,
-      ),
-      home: SignupScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create:
+            (_) => UserProvider(),),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Socially',
+        theme: ThemeData.dark().copyWith(
+          scaffoldBackgroundColor: mobileBackgroundColor,
+        ),
+        home: LoginScreen(),
 
-      //Scaffold(body: ResponsiveLayout(
-        //  webScreenLayout: WebScreenLayout(),
-          //mobileScreenLayout: MobileScreenLayout(),)
+        //Scaffold(body: ResponsiveLayout(
+          //  webScreenLayout: WebScreenLayout(),
+            //mobileScreenLayout: MobileScreenLayout(),)
+         ),
     );
   }
 }

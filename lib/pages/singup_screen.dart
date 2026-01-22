@@ -4,6 +4,7 @@ import 'dart:typed_data' show Uint8List;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:instagramclone/pages/login_screen.dart';
 import 'package:instagramclone/resources/auth_methods.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/utils.dart';
@@ -23,6 +24,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   Uint8List? _image;
+  bool _isLoading = false;
   @override
   void dispose() {
     super.dispose();
@@ -40,6 +42,29 @@ class _SignupScreenState extends State<SignupScreen> {
    });
   }
 
+  void signUpUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+  String res = await AuthMethods().signUpUser(
+  email: _emailController.text,
+  password: _passwordController.text,
+  username: _usernameController.text,
+  bio: _bioController.text,
+  file: _image!
+  );
+  setState(() {
+    _isLoading = false;
+  });
+  if(res != 'success') {
+   ShowSnackBar(res, context);
+  }
+}
+  void navigateToLogin(){
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => LoginScreen())
+    );
+  }
   @override
   Widget build(BuildContext context) {
     //pixel reflux error was because safe area is not a material widget
@@ -114,23 +139,11 @@ class _SignupScreenState extends State<SignupScreen> {
             const SizedBox(height: 24),
             InkWell(
               //adding conditional logic to check if image is null so throw error
-              onTap: () async {
-                if(_image == null){
-                   ScaffoldMessenger.of(context).showSnackBar(
-                     const SnackBar(content: Text("profile pic not uploaded"))
-                   );
-                }
-                String res = await AuthMethods().signUpUser(
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                    username: _usernameController.text,
-                    bio: _bioController.text,
-                    file: _image!
-                );
-                print(res);
-                },
+              onTap: signUpUser,
               child :Container(
-                child: const Text('Sign up'),
+                child: _isLoading ? const Center(child: CircularProgressIndicator(
+                  color: primaryColor,
+                ),) : const Text('Sign up'),
                 width: double.infinity,
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(vertical: 12),
@@ -158,9 +171,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: (){},
+                    onTap: navigateToLogin,
                     child: Container(
-                      child: Text("Sign up.",
+                      child: Text("Login.",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),

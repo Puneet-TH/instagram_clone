@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagramclone/pages/singup_screen.dart';
+import 'package:instagramclone/resources/auth_methods.dart';
 import 'package:instagramclone/utils/colors.dart';
+import 'package:instagramclone/utils/utils.dart';
 import 'package:instagramclone/widget/text_field.dart';
 
 class LoginScreen  extends StatefulWidget{
@@ -14,14 +17,36 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
+  bool _isLoading = false;
   @override
   void dispose() {
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
   }
+ void loginUser() async{
+    setState(() {
+       _isLoading = true;
+    });
+    String res = await AuthMethods().loginUser(
+        email: _emailController.text,
+        password: _passwordController.text);
+    if(res == "success"){
 
+    }
+    else{
+      ShowSnackBar(res, context);
+    }
+    setState(() {
+      _isLoading = false;
+    });
+ }
+
+ void navigateToSignup(){
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => SignupScreen())
+    );
+ }
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +87,12 @@ class _LoginScreenState extends State<LoginScreen> {
              height: 24,
            ),
 
-           InkWell(child :Container(
-             child: const Text('Log In'),
+           InkWell(
+             onTap: loginUser,
+             child :Container(
+             child: _isLoading ? const Center(child: CircularProgressIndicator(
+               color: primaryColor,
+             ),) : const Text('Log In'),
              width: double.infinity,
              alignment: Alignment.center,
              padding: const EdgeInsets.symmetric(vertical: 12),
@@ -91,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                  ),
                ),
                GestureDetector(
-                 onTap: (){},
+                 onTap: navigateToSignup,
                  child: Container(
                  child: Text("Sign up.",
                    style: TextStyle(

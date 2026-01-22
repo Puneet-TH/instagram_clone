@@ -8,7 +8,20 @@ class ResponsiveLayout extends StatelessWidget{
   const ResponsiveLayout({Key? key,
      required this.webScreenLayout,
      required this.mobileScreenLayout,}) : super(key: key);
+  @override
+  State<ResponsiveLayout> createState() => _ResponsiveLayoutState();
+}
 
+class _ResponsiveLayoutState extends State<ResponsiveLayout> {
+  @override
+  void initState(){
+    super.initState();
+    addData();
+  }
+
+  void addData() async{
+
+  }
   @override
   Widget build(BuildContext context) {
       return LayoutBuilder(builder: (context, constraints) {
