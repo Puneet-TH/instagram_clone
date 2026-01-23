@@ -10,6 +10,10 @@ import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/utils.dart';
 import 'package:instagramclone/widget/text_field.dart';
 
+import '../responsive/mobile_screen_layout.dart';
+import '../responsive/responsive.dart';
+import '../responsive/web_screen_layout.dart';
+
 class SignupScreen  extends StatefulWidget{
   const SignupScreen({Key? key}) : super(key: key);
 
@@ -43,23 +47,44 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void signUpUser() async {
+    // set loading to true
     setState(() {
       _isLoading = true;
     });
-  String res = await AuthMethods().signUpUser(
-  email: _emailController.text,
-  password: _passwordController.text,
-  username: _usernameController.text,
-  bio: _bioController.text,
-  file: _image!
-  );
-  setState(() {
-    _isLoading = false;
-  });
-  if(res != 'success') {
-   ShowSnackBar(res, context);
+
+    // signup user using our authmethodds
+    String res = await AuthMethods().signUpUser(
+        email: _emailController.text,
+        password: _passwordController.text,
+        username: _usernameController.text,
+        bio: _bioController.text,
+        file: _image!);
+    // if string returned is sucess, user has been created
+    if (res == "success") {
+      setState(() {
+        _isLoading = false;
+      });
+      // navigate to the home screen
+      if (context.mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const ResponsiveLayout(
+              mobileScreenLayout: MobileScreenLayout(),
+              webScreenLayout: WebScreenLayout(),
+            ),
+          ),
+        );
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      // show the error
+      if (context.mounted) {
+        ShowSnackBar(res, context);
+      }
+    }
   }
-}
   void navigateToLogin(){
     Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => LoginScreen())

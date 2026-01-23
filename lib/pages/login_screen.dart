@@ -6,6 +6,10 @@ import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/utils.dart';
 import 'package:instagramclone/widget/text_field.dart';
 
+import '../responsive/mobile_screen_layout.dart';
+import '../responsive/responsive.dart';
+import '../responsive/web_screen_layout.dart';
+
 class LoginScreen  extends StatefulWidget{
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -24,23 +28,36 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
   }
- void loginUser() async{
+  void loginUser() async {
     setState(() {
-       _isLoading = true;
+      _isLoading = true;
     });
     String res = await AuthMethods().loginUser(
-        email: _emailController.text,
-        password: _passwordController.text);
-    if(res == "success"){
+        email: _emailController.text, password: _passwordController.text);
+    if (res == 'success') {
+      if (context.mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => const ResponsiveLayout(
+                mobileScreenLayout: MobileScreenLayout(),
+                webScreenLayout: WebScreenLayout(),
+              ),
+            ),
+                (route) => false);
 
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      if (context.mounted) {
+        ShowSnackBar(res, context);
+      }
     }
-    else{
-      ShowSnackBar(res, context);
-    }
-    setState(() {
-      _isLoading = false;
-    });
- }
+  }
 
  void navigateToSignup(){
     Navigator.of(context).push(
