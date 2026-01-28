@@ -1,21 +1,72 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/utils/colors.dart';
+import 'package:instagramclone/utils/utils.dart';
 import 'package:instagramclone/widget/follow_button.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final String uid;
+  const ProfileScreen({
+    super.key,
+    required this.uid});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  var userData = {};
+  int postLen = 0;
+  int followers = 0;
+  int following = 0;
+  bool isFollowing = false;
+  bool isFollowers = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  getData() async{
+    try{
+    var userSnap = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.uid)
+        .get();
+
+    var postSnap = await FirebaseFirestore.instance.collection(
+        'posts').where(
+        'uid',
+        isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+      postLen = postSnap.docs.length;
+      userData = userSnap.data()!;
+      followers = userSnap.data()!['followers'].length;
+      following = userSnap.data()!['following'].length;
+      isFollowing = userSnap.data()!['followers'].contains(
+          FirebaseAuth.instance.currentUser!.uid);
+      isFollowers = userSnap.data()!['following'].contains(
+          FirebaseAuth.instance.currentUser!.uid);
+
+      setState(() {
+      });
+    }
+    catch(err){
+      ShowSnackBar(err.toString(), context);
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
          appBar: AppBar(
            backgroundColor: mobileBackgroundColor,
-           title: const Text('Profile'),
+           title: Text(
+             '${userData['username']}',
+           ),
            centerTitle: false,
          ),
       body: ListView(
@@ -29,37 +80,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       CircleAvatar(
                         backgroundColor: Colors.grey,
                         backgroundImage: NetworkImage(
-                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4AAbbL2Ds8bmv3PY2Nd5_KvookLE8Vsqkkw&s'
+                           userData['photoUrl']
                         ),
                         radius: 40,
                       ),
                       Expanded(
                           flex: 1,
-                          child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          buildStatColumn(1, "posts"),
-                          buildStatColumn(400, "followers"),
-                          buildStatColumn(500, "following"),
-                        ],
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                              buildStatColumn(postLen, "posts"),
+                              buildStatColumn(followers, "followers"),
+                              buildStatColumn(following, "following"),
+                                ],
+                              ),
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    //followbutton widget call
+                                   FirebaseAuth.instance.currentUser!.uid == widget.uid? FollowButton(
+                                      backgroundColor: mobileBackgroundColor,
+                                      borderColor: Colors.grey,
+                                      text: 'Edit Profile',
+                                      textColor: primaryColor,
+                                      function: (){},
+                                    ) : isFollowing ? FollowButton(
+                                     backgroundColor: Colors.white,
+                                     borderColor: Colors.grey,
+                                     text: 'Unfollow',
+                                     textColor: Colors.black,
+                                     function: (){},
+                                   ) : FollowButton(
+                                     backgroundColor: Colors.blue,
+                                     borderColor: Colors.blue,
+                                     text: 'Follow',
+                                     textColor: Colors.white,
+                                     function: (){},
+                                   )
+                                  ]
+                              )
+                            ],
+                          ),
                       ),
-                      ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                               //followbutton widget call
-                              // FollowButton(
-                              //   backgroundColor: mobileBackgroundColor,
-                              //   borderColor: Colors.grey,
-                              //   text: 'Edit Profile',
-                              //   textColor: primaryColor,
-                              //   function: (){},
-                              // )
-                          ]
-                      )
                     ],
-                  )
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.only(top: 15),
+                    child: Text(
+                      '${userData['username']}',
+                      style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.only(top: 1),
+                    child: Text(
+                      '${userData['bio']}',
+                    ),
+                  ),
                 ],
               ),
           )

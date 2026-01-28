@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instagramclone/utils/colors.dart';
 
 class FollowButton extends StatelessWidget {
   final Function()? function;
@@ -18,14 +19,14 @@ class FollowButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 28),
+      padding: const EdgeInsets.only(top: 4),
       child: TextButton(
           onPressed: (){},
           child: Container(
             decoration: BoxDecoration(
               color: backgroundColor,
               border: Border.all(
-                color: Colors.black,
+                color: borderColor,
               ),
               borderRadius: BorderRadius.circular(5),
             ),
