@@ -26,7 +26,6 @@ class _PostCardState  extends State<PostCard>{
 
     int commentLen = 0;
     bool isLikeAnimating = false;
-
     @override
   void initState() {
     super.initState();
@@ -48,8 +47,7 @@ class _PostCardState  extends State<PostCard>{
     Widget build(BuildContext context) {
 
       final model.User user = Provider.of<UserProvider>(context).getUser;
-
-      return Container(
+      return  Container(
         color: mobileBackgroundColor,
         padding: const EdgeInsets.symmetric(
             vertical: 10

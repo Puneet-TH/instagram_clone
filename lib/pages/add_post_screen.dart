@@ -111,16 +111,27 @@ class _AddPostScreenState extends State<AddPostScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final User user = Provider.of<UserProvider>(context).getUser;
-
+    final user = Provider.of<UserProvider>(context).getUser;
 
     return _file == null
-        ? Center(
-         child: IconButton(
-           icon: const Icon(Icons.upload),
-           onPressed: () => _selectImage(context),
-         ),
-     ) : Scaffold(
+        ? Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Add New Post by clicking the Icon',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              )
+            ),
+            Center(
+             child: IconButton(
+               icon: const Icon(Icons.upload),
+               onPressed: () => _selectImage(context),
+             ),
+                 ),
+          ],
+        ) : Scaffold(
           appBar: AppBar(
             backgroundColor: mobileBackgroundColor,
             leading: IconButton(

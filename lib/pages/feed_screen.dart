@@ -6,7 +6,7 @@ import 'package:instagramclone/widget/post_card.dart';
 
 class FeedScreen  extends StatelessWidget{
   const FeedScreen({Key? key}) : super(key : key);
-
+  
   @override
   Widget build(BuildContext context){
        return Scaffold(
@@ -28,6 +28,15 @@ class FeedScreen  extends StatelessWidget{
                if (snapshot.connectionState == ConnectionState.waiting) {
                  return const Center(
                    child: CircularProgressIndicator(),
+                 );
+               }
+
+               if (snapshot.hasError) {
+                 return Center(
+                   child: Text(
+                     'Server under maintainence',
+                     style: TextStyle(color: Colors.white),
+                   ),
                  );
                }
 

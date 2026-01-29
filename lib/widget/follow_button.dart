@@ -21,7 +21,7 @@ class FollowButton extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 4),
       child: TextButton(
-          onPressed: (){},
+          onPressed: function,
           child: Container(
             decoration: BoxDecoration(
               color: backgroundColor,
@@ -40,6 +40,7 @@ class FollowButton extends StatelessWidget {
               ),
             width: 250,
             height: 27,
+            padding: EdgeInsets.all(4),
           )
       ),
     );

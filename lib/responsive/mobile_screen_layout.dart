@@ -21,10 +21,12 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout>{
 
   int _page = 0;
   late PageController pageController;
+
   @override
   void initState() {
     super.initState();
     pageController = PageController();
+
   }
   @override
   void dispose(){
@@ -45,7 +47,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout>{
 
   //  model.User user = Provider.of<UserProvider>(context).getUser;
 
-    return Scaffold(
+    return  Scaffold(
       body: PageView(
         children: homeScreenItems,
         physics: const NeverScrollableScrollPhysics(),
