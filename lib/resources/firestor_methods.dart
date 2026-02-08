@@ -127,4 +127,26 @@ class FirestoreMethods {
     }
   }
 
+  Future<void> likeComment(String postId, String commentId, String uid, List likes) async{
+     try{
+       if(likes.contains(uid)){
+         await _firestore.collection('posts').doc(postId).collection('comments').doc(commentId).update(
+             {
+               'likes' : FieldValue.arrayRemove([uid]),
+             }
+         );
+       }
+       else{
+         await _firestore.collection('posts').doc(postId).collection('comments').doc(commentId).update(
+             {
+               'likes' : FieldValue.arrayUnion([uid]),
+             }
+         );
+       }
+     }
+     catch(err){
+       print("some error occured while liking comment");
+     }
+  }
+
 }
