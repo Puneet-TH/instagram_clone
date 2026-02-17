@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instagramclone/pages/followers_screen.dart';
 import 'package:instagramclone/pages/login_screen.dart';
 import 'package:instagramclone/resources/auth_methods.dart';
 import 'package:instagramclone/resources/firestor_methods.dart';
@@ -222,30 +223,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Column buildStatColumn(int num, String label){
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          num.toString(),
-          style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold
+  Widget buildStatColumn(int num, String label){
+    return InkWell(
+      onTap: () {
+        if (label == "followers" || label == "following") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FollowersScreen(
+                uid: widget.uid,
+                title: label == "followers" ? "Followers" : "Following",
+                type: label,
+              ),
+            ),
+          );
+        }
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            num.toString(),
+            style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+            ),
           ),
-        ),
-        Container(
-           margin: const EdgeInsetsGeometry.only(top: 4),
-           child: Text(
-                  label,
-                  style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.grey
+          Container(
+             margin: const EdgeInsetsGeometry.only(top: 4),
+             child: Text(
+                    label,
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey
+                    ),
                   ),
-                ),
-        ),
-      ]
+          ),
+        ]
+      ),
     );
   }
 }

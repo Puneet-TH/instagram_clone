@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/pages/comment_screen.dart';
+import 'package:instagramclone/pages/liked_by_screen.dart';
+import 'package:instagramclone/pages/profile_screen.dart';
 import 'package:instagramclone/resources/firestor_methods.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/utils.dart';
@@ -61,11 +63,21 @@ class _PostCardState  extends State<PostCard>{
               ).copyWith(right: 0),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 16,
-                    backgroundImage: NetworkImage(
-                       widget.snap['profImage']
+                  InkWell(
+                    onTap : () =>  Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder:
+                            (context) => ProfileScreen(uid: widget.snap['uid'],
+                            )
+                        )
                     ),
+                    child: CircleAvatar(
+                        radius: 16,
+                        backgroundImage: NetworkImage(
+                           widget.snap['profImage']
+                        ),
+                      ),
                   ),
                   Expanded(
                       child: Padding(
@@ -76,9 +88,20 @@ class _PostCardState  extends State<PostCard>{
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(widget.snap['username'],
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold),)
+                            InkWell(
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder:
+                                          (context) => ProfileScreen(uid: widget.snap['uid'],
+                                      )
+                                  )
+                              ),
+                              child:
+                                Text(widget.snap['username'],
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold),),
+                            )
                           ],
                         ),
                       )
@@ -224,10 +247,13 @@ class _PostCardState  extends State<PostCard>{
                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
                      fontWeight: FontWeight.w800,
                     ),
-                   child:  Text(
-                   '${widget.snap['likes'].length} likes',
-                   style: Theme.of(context).textTheme.bodyMedium,
-                 ),
+                   child:  InkWell(
+                     // onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LikedByScreen())),
+                     child: Text(
+                       '${widget.snap['likes'].length} likes',
+                       style: Theme.of(context).textTheme.bodyMedium,
+                     ),
+                   ),
                  ),
                   Container(
                     width: double.infinity,

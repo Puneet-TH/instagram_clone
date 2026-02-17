@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:instagramclone/pages/private_screen.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/user_provider.dart';
 
 class ChatProfile extends StatefulWidget {
   final snap;
@@ -17,8 +20,11 @@ class _ChatProfileState extends State<ChatProfile> {
   //      num += 1;
   //   });
   // }
+  int messageCount = 0;
+
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).getUser;
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 18,
@@ -51,7 +57,7 @@ class _ChatProfileState extends State<ChatProfile> {
             padding: EdgeInsets.symmetric(horizontal: 12),
             child: InkWell(
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PrivateScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PrivateScreen(snapTarget: widget.snap, snapSource: user)));
               },
              child: Badge(
                  label: Text("1"),

@@ -149,4 +149,46 @@ class FirestoreMethods {
      }
   }
 
+  Future<void> saveMessage(String sourceId, String receiverId, String message) async {
+    try {
+      List<String> ids = [sourceId, receiverId];
+      ids.sort();
+      String conversationId = ids.join('_');
+
+      await _firestore
+          .collection('conversations')
+          .doc(conversationId)
+          .collection('messages')
+          .add({  // auto-generates ID
+        'senderId': sourceId,      // ← This field is required
+        'receiverId': receiverId,
+        'message': message,
+        'datePublished': DateTime.now(),
+      });
+    } catch (err) {
+      print(err.toString());
+    }
+  }
+
+  Future<QuerySnapshot> getMessages(String sourceId, String receiverId) async {
+    try {
+      // Create SAME conversationId logic
+      List<String> ids = [sourceId, receiverId];
+      ids.sort();
+      String conversationId = ids.join('_');
+
+      QuerySnapshot snapshot = await _firestore
+          .collection('conversations')
+          .doc(conversationId)
+          .collection('messages')
+          .orderBy('datePublished', descending: false)
+          .get();
+
+      return snapshot;
+    } catch (err) {
+      print(err.toString());
+      rethrow;
+    }
+  }
+
 }
