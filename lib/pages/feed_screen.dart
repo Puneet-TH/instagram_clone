@@ -23,7 +23,7 @@ class _FeedScreenState extends State<FeedScreen> {
           backgroundColor: mobileBackgroundColor,
           centerTitle: false,
           //SvgPicture.asset
-          title: Text('INSTAGRAM'),
+          title: Image.asset('assets/images/instagram_logo.png', scale: 3.5,),
           actions: [
             IconButton(onPressed: () => Navigator.push(
                 context,

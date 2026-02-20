@@ -9,7 +9,7 @@ import 'package:instagramclone/resources/auth_methods.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/utils.dart';
 import 'package:instagramclone/widget/text_field.dart';
-
+import 'package:flutter/services.dart';
 import '../responsive/mobile_screen_layout.dart';
 import '../responsive/responsive.dart';
 import '../responsive/web_screen_layout.dart';
@@ -51,6 +51,18 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() {
       _isLoading = true;
     });
+    if(_emailController.text.isEmpty){
+      ShowSnackBar('please enter the email', context);
+    }
+    if(_passwordController.text.isEmpty){
+      ShowSnackBar('please enter the password', context);
+    }
+    if(_usernameController.text.isEmpty){
+      ShowSnackBar('please enter the username', context);
+    }
+    if(_bioController.text.isEmpty){
+      ShowSnackBar('please enter the bio', context);
+    }
 
     // signup user using our authmethodds
     String res = await AuthMethods().signUpUser(
@@ -81,7 +93,7 @@ class _SignupScreenState extends State<SignupScreen> {
       });
       // show the error
       if (context.mounted) {
-        ShowSnackBar(res, context);
+        ShowSnackBar('please fill all the details', context);
       }
     }
   }
@@ -90,6 +102,20 @@ class _SignupScreenState extends State<SignupScreen> {
         MaterialPageRoute(builder: (context) => LoginScreen())
     );
   }
+
+  void loadDefaultImage() async {
+    final ByteData data = await rootBundle.load('assets/images/default_image.jpg');
+    setState(() {
+      _image = data.buffer.asUint8List();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadDefaultImage();
+  }
+
   @override
   Widget build(BuildContext context) {
     //pixel reflux error was because safe area is not a material widget
@@ -126,7 +152,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 //adding conditional logic for rendering default profile image or uploaded one
                : const CircleAvatar(
                   radius: 64,
-                  backgroundImage: NetworkImage('https://static.vecteezy.com/system/resources/previews/013/360/247/non_2x/default-avatar-photo-icon-social-media-profile-sign-symbol-vector.jpg'),
+                  backgroundImage: AssetImage('assets/images/default_image.jpg')
                 ),
                 Positioned(
                   bottom: -10,

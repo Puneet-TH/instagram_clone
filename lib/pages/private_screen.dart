@@ -42,7 +42,7 @@ class _PrivateScreenState extends State<PrivateScreen> {
     _messageController.dispose();
   }
   void connect(){
-    socket = IO.io("http://10.0.2.2:4000", <String, dynamic>{
+    socket = IO.io("https://socket-service-va4b.onrender.com/", <String, dynamic>{
       "transports": ["websocket"],
       "autoconnect" : false,
     });

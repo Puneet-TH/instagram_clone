@@ -22,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _obscureText = true;
   @override
   void dispose() {
     super.dispose();
@@ -32,6 +33,12 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isLoading = true;
     });
+    if(_emailController.text.isEmpty){
+      ShowSnackBar('please enter the email', context);
+    }
+    if(_passwordController.text.isEmpty){
+      ShowSnackBar('please enter the password', context);
+    }
     String res = await AuthMethods().loginUser(
         email: _emailController.text, password: _passwordController.text);
     if (res == 'success') {
@@ -54,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
         _isLoading = false;
       });
       if (context.mounted) {
-        ShowSnackBar(res, context);
+        ShowSnackBar('please fill all the details', context);
       }
     }
   }
@@ -69,7 +76,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     //pixel reflux error was because safe area is not a material widget
     //and we can call only material widget inside material widget
-
+    final inputBorder = OutlineInputBorder(
+      borderSide: Divider.createBorderSide(context),
+    );
    return Scaffold(body: SafeArea(
      child: Container(
        padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -78,15 +87,15 @@ class _LoginScreenState extends State<LoginScreen> {
          crossAxisAlignment: CrossAxisAlignment.center,
          children: [
            Flexible(flex: 2,child: Container()),
-           // SvgPicture.asset(
-           //   'assets/ic_instagram.svg',
-           //   color: primaryColor,
-           //   height: 64,
-           // ),
-           Text('INSTAGRAM' , style: TextStyle(
-             fontWeight: FontWeight.w600,
-             fontSize: 32,
-           ), ),
+           SvgPicture.asset(
+             'assets/images/ic_instagram.svg',
+             color: primaryColor,
+             height: 64,
+           ),
+           // Text('INSTAGRAM' , style: TextStyle(
+           //   fontWeight: FontWeight.w600,
+           //   fontSize: 32,
+           // ), ),
            const SizedBox(height: 64),
            TextFieldInput(
                textInputType: TextInputType.emailAddress,
@@ -94,11 +103,34 @@ class _LoginScreenState extends State<LoginScreen> {
                hintText: 'Enter your Email'
            ),
            const SizedBox(height: 24),
-           TextFieldInput(
-               textInputType: TextInputType.text,
-               textEditingController: _passwordController,
-               hintText: 'Enter your Password',
-               isPass: true,
+           // TextFieldInput(
+           //     textInputType: TextInputType.text,
+           //     textEditingController: _passwordController,
+           //     hintText: 'Enter your Password',
+           //     isPass: true,
+           // ),
+           TextField(
+             controller: _passwordController,
+             keyboardType: TextInputType.visiblePassword,
+             obscureText: _obscureText,
+             decoration: InputDecoration(
+               border: inputBorder,
+               focusedBorder: inputBorder,
+               enabledBorder: inputBorder,
+               filled: true,
+               contentPadding: const EdgeInsets.all(8),
+               labelText: 'Enter your Password',
+               suffixIcon: IconButton(
+                 icon: Icon(
+                   _obscureText ? Icons.visibility : Icons.visibility_off,
+                 ),
+                 onPressed: () {
+                   setState(() {
+                     _obscureText = !_obscureText;
+                   });
+               },
+               ),
+             ),
            ),
            const SizedBox(
              height: 24,
@@ -122,11 +154,13 @@ class _LoginScreenState extends State<LoginScreen> {
              ),
            ),
            ),
+           // SizedBox(
+           //   height: 12,
+           // ),
            SizedBox(
              height: 12,
            ),
-           Flexible(flex: 2,child: Container()),
-           
+           Flexible(flex:2,child: Container()),
            Row(
              mainAxisAlignment: MainAxisAlignment.center,
              children: [

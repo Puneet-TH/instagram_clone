@@ -26,24 +26,7 @@ class PostCard extends StatefulWidget {
 }
 class _PostCardState  extends State<PostCard>{
 
-    int commentLen = 0;
     bool isLikeAnimating = false;
-    @override
-  void initState() {
-    super.initState();
-    getComments();
-  }
-
-  void getComments() async {
-      try{
-        QuerySnapshot snap = await FirebaseFirestore.instance.collection('posts').doc(widget.snap['postId']).collection(('comments')).get();
-        commentLen = snap.docs.length;
-      }
-      catch(e){
-        ShowSnackBar(e.toString(), context);
-      }
-    }
-
 
     @override
     Widget build(BuildContext context) {
@@ -206,12 +189,13 @@ class _PostCardState  extends State<PostCard>{
                    smallLike: true,
                ),
                 IconButton(
-                    onPressed: () => Navigator.of(context).push(
+                    onPressed: () { Navigator.of(context).push(
                     MaterialPageRoute(
                     builder: (context) => CommentScreen(
                       snap: widget.snap,
                     ),
-                    ),),
+                    ),);
+                    },
                     icon: const Icon(
                       Icons.comment_outlined,
                       color: primaryColor,
@@ -279,19 +263,39 @@ class _PostCardState  extends State<PostCard>{
                   InkWell(
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                      builder: (context) => CommentScreen(
-                      snap: widget.snap,
+                        builder: (context) => CommentScreen(
+                          snap: widget.snap,
+                        ),
                       ),
-                      ),),
+                    ),
                     child: Container(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         vertical: 4
                       ),
-                      child: Text('view all $commentLen comments',
-                        style: const TextStyle(
-                            fontSize: 16,
-                            color: secondaryColor
-                        ),
+                      child: StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection('posts')
+                            .doc(widget.snap['postId'])
+                            .collection('comments')
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Text(
+                              'view all 0 comments',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: secondaryColor
+                              ),
+                            );
+                          }
+                          return Text(
+                            'view all ${snapshot.data?.docs.length ?? 0} comments',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: secondaryColor
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
