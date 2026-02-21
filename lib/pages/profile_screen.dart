@@ -3,11 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/pages/followers_screen.dart';
 import 'package:instagramclone/pages/login_screen.dart';
+import 'package:instagramclone/pages/profile_post_screen.dart';
 import 'package:instagramclone/resources/auth_methods.dart';
 import 'package:instagramclone/resources/firestor_methods.dart';
 import 'package:instagramclone/utils/colors.dart';
 import 'package:instagramclone/utils/utils.dart';
 import 'package:instagramclone/widget/follow_button.dart';
+import 'package:instagramclone/widget/message_button.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
@@ -160,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                          followers++;
                                        });
                                      },
-                                   )
+                                   ),
                                   ]
                               )
                             ],
@@ -208,11 +210,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 itemBuilder: (context, index){
                   DocumentSnapshot snap = (snapshot.data! as dynamic).docs[index];
-                  return Container(
-                    child: Image(
-                      image: NetworkImage(snap['postUrl']),
-                      fit: BoxFit.cover,
-                    )
+                  return GestureDetector(
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePostScreen(uid: widget.uid,))),
+                    child: Container(
+                        child: Image(
+                          image: NetworkImage(snap['postUrl']),
+                          fit: BoxFit.cover,
+                        )
+                      ),
                   );
                 },
               );

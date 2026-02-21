@@ -31,8 +31,12 @@ class _PrivateScreenState extends State<PrivateScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    // Mark messages as read when opening chat
+    FirestoreMethods().markAsRead(
+      widget.snapSource.uid,
+      widget.snapTarget['uid']
+    );
     connect();
   }
 
@@ -63,11 +67,12 @@ class _PrivateScreenState extends State<PrivateScreen> {
     socket.emit("message",
               {"message" : message,
                 "sourceId" : sourceId,
-                "receiverId" : receiverId
+                "receiverId" : receiverId,
               }
               );
     FirestoreMethods().saveMessage(sourceId, receiverId, message);
   }
+
 
   void setMessage(String type, String message) {
     MessageModel messageModel = MessageModel(type: type, message: message);
@@ -77,7 +82,6 @@ class _PrivateScreenState extends State<PrivateScreen> {
   }
   @override
   Widget build(BuildContext context) {
-
     //current user = user
     //jiske sath karni baat voh snap
     final user = Provider.of<UserProvider>(context).getUser;
@@ -124,12 +128,16 @@ class _PrivateScreenState extends State<PrivateScreen> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  textAlign: TextAlign.center,
-                                  '${widget.snapTarget['username'] ?? 'Unknown'} is active now',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18
+                                Expanded(
+                                  child: Text(
+                                    textAlign: TextAlign.left,
+                                    '${widget.snapTarget['username'] ?? 'Unknown'}',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
                                 ),
                               ],

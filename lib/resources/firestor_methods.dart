@@ -159,12 +159,37 @@ class FirestoreMethods {
           .collection('conversations')
           .doc(conversationId)
           .collection('messages')
-          .add({  // auto-generates ID
-        'senderId': sourceId,      // ← This field is required
+          .add({
+        'senderId': sourceId,
         'receiverId': receiverId,
         'message': message,
         'datePublished': DateTime.now(),
+        'isRead': false,
       });
+    } catch (err) {
+      print(err.toString());
+    }
+  }
+
+  // Mark messages as read
+  Future<void> markAsRead(String currentUserId, String otherUserId) async {
+    try {
+      List<String> ids = [currentUserId, otherUserId];
+      ids.sort();
+      String conversationId = ids.join('_');
+
+      // Mark all messages from other user as read
+      QuerySnapshot unreadMessages = await _firestore
+          .collection('conversations')
+          .doc(conversationId)
+          .collection('messages')
+          .where('senderId', isEqualTo: otherUserId)
+          .where('isRead', isEqualTo: false)
+          .get();
+
+      for (var doc in unreadMessages.docs) {
+        await doc.reference.update({'isRead': true});
+      }
     } catch (err) {
       print(err.toString());
     }
