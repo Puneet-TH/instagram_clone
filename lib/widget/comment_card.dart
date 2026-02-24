@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:instagramclone/pages/profile_screen.dart';
 import 'package:intl/intl.dart';
 
 class CommentCard extends StatefulWidget {
@@ -19,9 +21,13 @@ class _CommentCardState extends State<CommentCard> {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            backgroundImage: NetworkImage(widget.snap['profilePic']),
-            radius: 18,
+          InkWell(
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(uid: widget.snap['uid']))),
+            child:
+              CircleAvatar(
+                backgroundImage: NetworkImage(widget.snap['profilePic']),
+                radius: 18,
+              ),
           ),
           Expanded(
               child: Padding(
@@ -37,6 +43,8 @@ class _CommentCardState extends State<CommentCard> {
                           style: const TextStyle(
                               fontWeight: FontWeight.bold
                           ),
+                          recognizer: TapGestureRecognizer()
+    ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(uid: widget.snap['uid'])))
                         ),
                         TextSpan(
                           text: '    ${widget.snap['text']}',

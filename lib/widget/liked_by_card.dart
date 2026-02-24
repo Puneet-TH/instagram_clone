@@ -1,64 +1,115 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:instagramclone/pages/profile_screen.dart';
 import 'package:instagramclone/utils/colors.dart';
+import 'package:intl/intl.dart';
 
-class FollowFollowingCard extends StatefulWidget {
-  final snap;
-  const FollowFollowingCard({super.key, required this.snap});
+class LikedByCard extends StatefulWidget {
+  final userId;
+  final postId;
+  const LikedByCard({super.key, required this.userId, required this.postId});
+
   @override
-  State<FollowFollowingCard> createState() => _FollowFollowingCardState();
+  State<LikedByCard> createState() => _LikedByCardState();
 }
 
-class _FollowFollowingCardState extends State<FollowFollowingCard> {
+class _LikedByCardState extends State<LikedByCard> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 18,
-        horizontal: 18,
-      ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(
-                widget.snap['photoUrl'] ?? 
-                'https://media.gq-magazine.co.uk/photos/5d138da5d7a7010d5bbb99a4/16:9/w_2560%2Cc_limit/dark_souls_remastered_crop.jpg'
-              ),
-              radius: 24,
+    return FutureBuilder( //future builder tab use kare jab query lga ke snap mile
+      future: FirebaseFirestore.instance.collection('users').doc(widget.userId).get(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container(
+            padding: const EdgeInsets.symmetric(
+              vertical: 18,
+              horizontal: 16,
             ),
-            Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        widget.snap['username'] ?? 'Unknown',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text(
-                          widget.snap['bio'] ?? '',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        if (!snapshot.hasData || snapshot.data == null) {
+          return Container(
+            padding: const EdgeInsets.symmetric(
+              vertical: 18,
+              horizontal: 16,
+            ),
+            child: const Text('User not found'),
+          );
+        }
+
+        var snap = snapshot.data!.data() as Map<String, dynamic>;
+
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            vertical: 18,
+            horizontal: 16,
+          ),
+          child: Row(
+            children: [
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(uid: widget.userId))),
+                child: CircleAvatar(
+                    backgroundImage: NetworkImage(snap['photoUrl']),
+                    radius: 18,
                   ),
-                )),
-            Container(
-              //add follow button here if needed
-            )
-          ],
-        ),
+              ),
+              Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        RichText(text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: snap['username']?? 'unknown',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: primaryColor
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(uid: widget.userId)))
+                              ),
+                              const TextSpan(
+                                text: ' liked your post',
+                                style: TextStyle(color: primaryColor),
+                              ),
+                            ]
+                        )
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            DateFormat.yMMMd().format(DateTime.now()),
+                            style: const TextStyle(fontSize: 12,
+                                fontWeight: FontWeight.w400
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+              widget.postId != null ? Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(widget.postId),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ],
+          ),
+        );
+      },
     );
   }
 }

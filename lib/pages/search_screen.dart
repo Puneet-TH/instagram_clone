@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:instagramclone/pages/feed_screen.dart';
+import 'package:instagramclone/pages/profile_post_screen.dart';
 import 'package:instagramclone/pages/profile_screen.dart';
 import 'package:instagramclone/utils/colors.dart';
 
@@ -92,9 +93,12 @@ class _SearchScreenState extends State<SearchScreen> {
           return MasonryGridView.count(
             crossAxisCount: 3,
             itemCount: (snapshot.data! as dynamic).docs.length,
-            itemBuilder: (context, index) => Image.network(
-              (snapshot.data! as dynamic).docs[index]['postUrl'],
-              fit: BoxFit.cover,
+            itemBuilder: (context, index) => InkWell(
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePostScreen(uid: (snapshot.data! as dynamic).docs[index]['uid']))),
+              child: Image.network(
+                (snapshot.data! as dynamic).docs[index]['postUrl'],
+                fit: BoxFit.cover,
+              ),
             ),
             mainAxisSpacing: 8.0,
             crossAxisSpacing: 8.0,

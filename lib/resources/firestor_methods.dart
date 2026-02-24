@@ -215,5 +215,22 @@ class FirestoreMethods {
       rethrow;
     }
   }
+  Future<List<Map<String, dynamic>>> getLikedByUsers(String currUserId) async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('posts').where('uid', isEqualTo: currUserId).get();
+    print(snapshot);
+    List<Map<String, dynamic>> data = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    return data;
+  }
+  // Future<QuerySnapshot> getLikedByUsers(String postId) async{
+  //     try{
+  //       QuerySnapshot snapshot = await _firestore.collection('posts').doc(postId).collection('likes').get();
+  //       print(snapshot);
+  //       return snapshot;
+  //     }
+  //     catch(err){
+  //       print(err.toString());
+  //       rethrow;
+  //     }
+  //  }
 
 }

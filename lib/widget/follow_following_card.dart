@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:instagramclone/pages/profile_screen.dart';
-import 'package:instagramclone/pages/service_down.dart';
 import 'package:instagramclone/utils/colors.dart';
 
 class FollowFollowingCard extends StatefulWidget {
@@ -20,28 +18,12 @@ class _FollowFollowingCardState extends State<FollowFollowingCard> {
       ),
         child: Row(
           children: [
-            InkWell(
-              onTap: (){
-                 if(widget.snap['uid'] == null){
-                   Navigator.push(
-                       context,
-                       MaterialPageRoute(
-                           builder:
-                               (context) => ServiceDown()
-                       )
-                   );
-                 }
-                 Navigator.push(context, MaterialPageRoute(
-                     builder: (context) => ProfileScreen(uid: widget.snap['uid'])
-                 ));
-              },
-              child: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    widget.snap['photoUrl'] ??
-                    'https://media.gq-magazine.co.uk/photos/5d138da5d7a7010d5bbb99a4/16:9/w_2560%2Cc_limit/dark_souls_remastered_crop.jpg'
-                  ),
-                  radius: 24,
-                ),
+            CircleAvatar(
+              backgroundImage: NetworkImage(
+                widget.snap['photoUrl'] ?? 
+                'https://media.gq-magazine.co.uk/photos/5d138da5d7a7010d5bbb99a4/16:9/w_2560%2Cc_limit/dark_souls_remastered_crop.jpg'
+              ),
+              radius: 24,
             ),
             Expanded(
                 child: Padding(
@@ -50,28 +32,12 @@ class _FollowFollowingCardState extends State<FollowFollowingCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      InkWell(
-                        onTap: (){
-                          if(widget.snap['uid'] == null){
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder:
-                                        (context) => ServiceDown()
-                                )
-                            );
-                          }
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => ProfileScreen(uid: widget.snap['uid'])
-                          ));
-                        },
-                        child: Text(
-                            widget.snap['username'] ?? 'Unknown',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
+                      Text(
+                        widget.snap['username'] ?? 'Unknown',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 4),
