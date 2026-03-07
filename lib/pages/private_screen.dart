@@ -1,6 +1,3 @@
-
-
-import 'package:appwrite/models.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instagramclone/models/message.dart';
@@ -10,6 +7,9 @@ import 'package:instagramclone/widget/comment_card.dart';
 import 'package:instagramclone/widget/own_message.dart';
 import 'package:instagramclone/widget/received_message.dart';
 import 'package:provider/provider.dart';
+import 'package:zego_express_engine/zego_express_engine.dart';
+import 'package:zego_uikit/src/services/defines/user.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import '../models/user.dart' as Model;
 import '../providers/user_provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -147,13 +147,43 @@ class _PrivateScreenState extends State<PrivateScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Icon(
-                            Icons.call_end_outlined
+                          InkWell(
+                            child: Icon(
+                                Icons.call_end_outlined
+                            ),
+                            onTap: () {
+                              ZegoUIKitPrebuiltCallInvitationService().send(
+                                invitees: [
+                                  ZegoCallUser.fromUIKit(
+                                      ZegoUIKitUser(
+                                          id: widget.snapTarget['uid'],
+                                          name: widget.snapTarget['username']
+                                      )
+                                  )
+                                ],
+                                isVideoCall: false,
+                              );
+                            },
                           ),
                           Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
-                          Icon(
-                            Icons.video_call
-                          ),
+                         InkWell(
+                           onTap: () {
+                             ZegoUIKitPrebuiltCallInvitationService().send(
+                               invitees: [
+                                 ZegoCallUser.fromUIKit(
+                                     ZegoUIKitUser(
+                                       id: widget.snapTarget['uid'],
+                                       name: widget.snapTarget['username']
+                                     )
+                                 )
+                               ],
+                               isVideoCall: true,
+                             );
+                           },
+                           child: Icon(
+                               Icons.video_call
+                           ),
+                         )
                         ],
                       )
                     ],

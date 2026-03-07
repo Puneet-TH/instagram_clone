@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:instagramclone/config/zego_config.dart';
 import 'package:instagramclone/utils/global_variable.dart';
 import 'package:provider/provider.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 import '../providers/user_provider.dart';
 
 
@@ -20,6 +23,7 @@ class ResponsiveLayout extends StatefulWidget {
 class _ResponsiveLayoutState extends State<ResponsiveLayout> {
 
   bool _isLoading = true;
+  static bool _zegoInitialized = false;
 
   @override
   void initState() {
@@ -30,9 +34,29 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   addData() async{
     UserProvider _userProvider = Provider.of(context, listen: false);
     await _userProvider.refreshUser();
-    setState(() {
-      _isLoading = false;
-    });
+    final user = _userProvider.getUser;
+    if (!_zegoInitialized) {
+      _zegoInitialized = true;
+      ZegoUIKitPrebuiltCallInvitationService().setNavigatorKey(navigatorKey);
+      await ZegoUIKitPrebuiltCallInvitationService().init(
+          appID: ZegoConfig().AppID,
+          appSign: ZegoConfig().AppSign,
+          userID: user.uid,
+          userName: user.username,
+          plugins: [ZegoUIKitSignalingPlugin()]);
+    }
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void dispose(){
+    ZegoUIKitPrebuiltCallInvitationService().uninit();
+    _zegoInitialized = false;
+    super.dispose();
   }
 
   @override

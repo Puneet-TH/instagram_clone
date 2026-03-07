@@ -10,6 +10,7 @@ import 'package:instagramclone/responsive/mobile_screen_layout.dart';
 import 'package:instagramclone/responsive/responsive.dart';
 import 'package:instagramclone/responsive/web_screen_layout.dart';
 import 'package:instagramclone/utils/colors.dart';
+import 'package:instagramclone/utils/global_variable.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
             (_) => UserProvider(),),
       ],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'Socially',
         theme: ThemeData.dark().copyWith(

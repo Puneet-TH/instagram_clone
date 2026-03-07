@@ -95,17 +95,6 @@ class _LikedByCardState extends State<LikedByCard> {
                       ],
                     ),
                   )),
-              widget.postId != null ? Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(widget.postId),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    )
-                  : const SizedBox.shrink(),
             ],
           ),
         );
